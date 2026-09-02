@@ -65,6 +65,28 @@ public class DoctorListController {
     }
 
     @FXML
+    private void handleDelete() {
+        Doctor selected = doctorTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertUtils.showError("No Selection", "Please select a doctor to delete.");
+            return;
+        }
+        boolean confirmed = AlertUtils.confirm("Confirm Delete",
+                "Delete doctor " + selected.getId() + " - " + selected.getName() + "?");
+        if (!confirmed) {
+            return;
+        }
+        try {
+            doctorDAO.deleteDoctor(selected.getId());
+            handleRefresh();
+        } catch (SQLException e) {
+            AlertUtils.showError("Database Error",
+                    "Could not delete doctor. If this doctor has existing appointments, "
+                            + "the database will reject the delete until those are removed first.\n" + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleRefresh() {
         try {
             doctorList.setAll(doctorDAO.getAllDoctors());

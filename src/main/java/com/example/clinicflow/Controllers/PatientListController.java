@@ -1,5 +1,6 @@
 package com.example.clinicflow.Controllers;
 
+import com.example.clinicflow.Classes.AppointmentDAO;
 import com.example.clinicflow.Classes.Patient;
 import com.example.clinicflow.Classes.PatientDAO;
 import javafx.collections.FXCollections;
@@ -35,6 +36,7 @@ public class PatientListController {
     private TableColumn<Patient, String> addressColumn;
 
     private final PatientDAO patientDAO = new PatientDAO();
+    private final AppointmentDAO appointmentDAO = new AppointmentDAO();
     private final ObservableList<Patient> patientList = FXCollections.observableArrayList();
 
     @FXML
@@ -92,12 +94,28 @@ public class PatientListController {
             AlertUtils.showError("No Selection", "Please select a patient to delete.");
             return;
         }
-        boolean confirmed = AlertUtils.confirm("Confirm Delete",
-                "Delete patient " + selected.getId() + " - " + selected.getName() + "?");
-        if (!confirmed) {
-            return;
-        }
+
         try {
+            int appointmentCount = appointmentDAO.countByPatient(selected.getId());
+
+            String message;
+            if (appointmentCount > 0) {
+                message = "Delete patient " + selected.getId() + " - " + selected.getName() + "?\n\n"
+                        + "This patient has " + appointmentCount
+                        + " appointment(s) on record. Deleting this patient will also permanently delete "
+                        + "all of their appointment history.";
+            } else {
+                message = "Delete patient " + selected.getId() + " - " + selected.getName() + "?";
+            }
+
+            boolean confirmed = AlertUtils.confirm("Confirm Delete", message);
+            if (!confirmed) {
+                return;
+            }
+
+            if (appointmentCount > 0) {
+                appointmentDAO.deleteAppointmentsByPatient(selected.getId());
+            }
             patientDAO.deletePatient(selected.getId());
             handleRefresh();
         } catch (SQLException e) {

@@ -127,7 +127,8 @@ public class AppointmentListController {
             return;
         }
         boolean confirmed = AlertUtils.confirm("Confirm Cancel",
-                "Cancel appointment #" + selected.getAppointmentId() + "?");
+                "Cancel appointment #" + selected.getAppointmentId() + "?\n\n"
+                        + "This keeps the appointment on record but marks it as cancelled.");
         if (!confirmed) {
             return;
         }
@@ -140,9 +141,31 @@ public class AppointmentListController {
     }
 
     @FXML
+    private void handleDelete() {
+        Appointment selected = appointmentTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertUtils.showError("No Selection", "Please select an appointment to delete.");
+            return;
+        }
+        boolean confirmed = AlertUtils.confirm("Confirm Delete",
+                "Permanently delete appointment #" + selected.getAppointmentId() + "?\n\n"
+                        + "This removes it from the database entirely and cannot be undone. "
+                        + "If you just want to keep a record of it, use Cancel instead.");
+        if (!confirmed) {
+            return;
+        }
+        try {
+            appointmentDAO.deleteAppointment(selected.getAppointmentId());
+            handleRefresh();
+        } catch (SQLException e) {
+            AlertUtils.showError("Database Error", "Could not delete appointment:\n" + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleRefresh() {
         try {
-            appointmentList.setAll(appointmentDAO.getTodaysAppointments());
+            appointmentList.setAll(appointmentDAO.getAllAppointments());
         } catch (SQLException e) {
             AlertUtils.showError("Database Error", "Could not load appointments:\n" + e.getMessage());
         }

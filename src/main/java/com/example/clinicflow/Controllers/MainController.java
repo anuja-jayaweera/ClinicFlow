@@ -5,8 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 
-import java.io.IOException;
-
 public class MainController {
 
     @FXML
@@ -41,8 +39,9 @@ public class MainController {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
             contentArea.getChildren().setAll(view);
-        } catch (IOException e) {
-            AlertUtils.showError("Navigation Error", "Could not load view: " + fxmlPath + "\n" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtils.showError("Navigation Error", "Could not load view: " + fxmlPath + "\n" + e);
         }
     }
 }

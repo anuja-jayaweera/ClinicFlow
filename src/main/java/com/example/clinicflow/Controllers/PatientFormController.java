@@ -32,7 +32,7 @@ public class PatientFormController {
     private Patient editingPatient;
     private boolean saved = false;
 
-    /** Call before showing the dialog to switch it into edit mode. */
+
     public void setPatient(Patient patient) {
         this.editingPatient = patient;
         formTitleLabel.setText("Edit Patient");

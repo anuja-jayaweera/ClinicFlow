@@ -30,7 +30,7 @@ public class RescheduleController {
     private int appointmentId;
     private boolean saved = false;
 
-    /** Call before showing the dialog. */
+
     public void setAppointmentId(int appointmentId) {
         this.appointmentId = appointmentId;
         datePicker.setValue(LocalDate.now());

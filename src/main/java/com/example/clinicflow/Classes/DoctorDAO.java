@@ -34,7 +34,7 @@ public class DoctorDAO {
 
     public List<Doctor> getAllDoctors() throws SQLException {
         List<Doctor> results = new ArrayList<>();
-        String sql = "SELECT * FROM doctors ORDER BY name";
+        String sql = "SELECT * FROM doctors ORDER BY doctor_id";
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -43,6 +43,15 @@ public class DoctorDAO {
             }
         }
         return results;
+    }
+
+    public void deleteDoctor(String doctorId) throws SQLException {
+        String sql = "DELETE FROM doctors WHERE doctor_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, doctorId);
+            stmt.executeUpdate();
+        }
     }
 
     private Doctor mapRow(ResultSet rs) throws SQLException {

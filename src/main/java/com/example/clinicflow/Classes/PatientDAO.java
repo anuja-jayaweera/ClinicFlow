@@ -33,10 +33,9 @@ public class PatientDAO {
         return null;
     }
 
-    /** Search by name (partial match) or exact patient ID. */
     public List<Patient> searchPatients(String keyword) throws SQLException {
         List<Patient> results = new ArrayList<>();
-        String sql = "SELECT * FROM patients WHERE patient_id = ? OR name LIKE ?";
+        String sql = "SELECT * FROM patients WHERE patient_id = ? OR name LIKE ? ORDER BY patient_id";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, keyword);
@@ -52,7 +51,7 @@ public class PatientDAO {
 
     public List<Patient> getAllPatients() throws SQLException {
         List<Patient> results = new ArrayList<>();
-        String sql = "SELECT * FROM patients ORDER BY name";
+        String sql = "SELECT * FROM patients ORDER BY patient_id";
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {

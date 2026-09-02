@@ -2,37 +2,41 @@ package com.example.clinicflow.Controllers;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 
 import java.util.Optional;
 
-//with this class every controller will show the alerts same way
 public class AlertUtils {
 
     private AlertUtils() {
     }
 
     public static void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        showAndBringToFront(build(Alert.AlertType.ERROR, title, message));
     }
 
     public static void showInfo(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        showAndBringToFront(build(Alert.AlertType.INFORMATION, title, message));
     }
 
     public static boolean confirm(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = build(Alert.AlertType.CONFIRMATION, title, message);
+        Optional<ButtonType> result = showAndBringToFront(alert);
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    private static Alert build(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        Optional<ButtonType> result = alert.showAndWait();
-        return result.isPresent() && result.get() == ButtonType.OK;
+        return alert;
+    }
+
+    private static Optional<ButtonType> showAndBringToFront(Alert alert) {
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);
+        stage.toFront();
+        return alert.showAndWait();
     }
 }

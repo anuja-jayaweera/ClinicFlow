@@ -8,7 +8,7 @@ import java.util.List;
 
 public class AppointmentDAO {
 
-    /** Books an appointment after checking the doctor isn't already booked at that time. */
+    // Books an appointment after checking the doctor isn't already booked at that time
     public void bookAppointment(Appointment appt) throws SQLException, DoubleBookingException {
         if (isDoctorBooked(appt.getDoctorId(), appt.getDateTime())) {
             throw new DoubleBookingException(
@@ -59,6 +59,30 @@ public class AppointmentDAO {
         return results;
     }
 
+    // Returns every appointment on record, regardless of date, most recent first
+    public List<Appointment> getAllAppointments() throws SQLException {
+        List<Appointment> results = new ArrayList<>();
+        String sql = "SELECT * FROM appointments ORDER BY appt_datetime DESC";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                results.add(mapRow(rs));
+            }
+        }
+        return results;
+    }
+
+    // Permanently removes an appointment row from the database
+    public void deleteAppointment(int appointmentId) throws SQLException {
+        String sql = "DELETE FROM appointments WHERE appointment_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, appointmentId);
+            stmt.executeUpdate();
+        }
+    }
+
     public void cancelAppointment(int appointmentId) throws SQLException {
         updateStatus(appointmentId, AppointmentStatus.CANCELLED);
     }
@@ -106,7 +130,7 @@ public class AppointmentDAO {
         }
     }
 
-    /** Dashboard helper: counts today's appointments grouped by status. */
+    // Dashboard helper: counts today's appointments grouped by status
     public int countTodayByStatus(AppointmentStatus status) throws SQLException {
         String sql = "SELECT COUNT(*) FROM appointments WHERE DATE(appt_datetime) = ? AND status = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -120,6 +144,31 @@ public class AppointmentDAO {
             }
         }
         return 0;
+    }
+
+    // Counts every appointment (any status, any date) tied to this patient. Used before a patient delete.
+    public int countByPatient(String patientId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM appointments WHERE patient_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, patientId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    // Deletes every appointment tied to this patient. Call before deleting the patient record itself.
+    public void deleteAppointmentsByPatient(String patientId) throws SQLException {
+        String sql = "DELETE FROM appointments WHERE patient_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, patientId);
+            stmt.executeUpdate();
+        }
     }
 
     private Appointment mapRow(ResultSet rs) throws SQLException {
