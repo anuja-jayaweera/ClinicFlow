@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.clinicflow.Controllers.MainController"
+            stylesheets="@styles.css"
+            styleClass="root">
+
+    <top>
+        <VBox styleClass="header-bar">
+            <Label text="ClinicFlow" styleClass="app-title">
+                <VBox.margin>
+                    <Insets top="12" bottom="0" left="20" right="20"/>
+                </VBox.margin>
+            </Label>
+            <Label text="Flow Better. Heal Better." styleClass="app-slogan">
+                <VBox.margin>
+                    <Insets top="0" bottom="12" left="20" right="20"/>
+                </VBox.margin>
+            </Label>
+        </VBox>
+    </top>
+
+    <left>
+        <VBox spacing="8" prefWidth="180.0" styleClass="sidebar">
+            <padding>
+                <Insets top="20" left="10" right="10" bottom="20"/>
+            </padding>
+
+            <Button fx:id="dashboardButton" text="Dashboard" maxWidth="Infinity" onAction="#showDashboard" styleClass="nav-button"/>
+            <Button fx:id="patientsButton" text="Patients" maxWidth="Infinity" onAction="#showPatients" styleClass="nav-button"/>
+            <Button fx:id="doctorsButton" text="Doctors" maxWidth="Infinity" onAction="#showDoctors" styleClass="nav-button"/>
+            <Button fx:id="appointmentsButton" text="Appointments" maxWidth="Infinity" onAction="#showAppointments" styleClass="nav-button"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+            <padding>
+                <Insets top="15" left="15" right="15" bottom="15"/>
+            </padding>
+        </StackPane>
+    </center>
+
+</BorderPane>

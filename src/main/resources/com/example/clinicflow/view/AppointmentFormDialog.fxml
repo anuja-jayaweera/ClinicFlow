@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.clinicflow.Controllers.AppointmentFormController"
+      stylesheets="@styles.css"
+      spacing="16" prefWidth="400">
+
+    <padding>
+        <Insets top="22" left="22" right="22" bottom="22"/>
+    </padding>
+
+    <Label text="Book Appointment" styleClass="form-title"/>
+
+    <Label fx:id="errorLabel" styleClass="error-label" wrapText="true" managed="false" visible="false"/>
+
+    <GridPane hgap="10" vgap="14">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Patient ID" styleClass="form-field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="patientIdField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Doctor ID" styleClass="form-field-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="doctorComboBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="Date" styleClass="form-field-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <DatePicker fx:id="datePicker" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <Label text="Time (HH:mm)" styleClass="form-field-label" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <TextField fx:id="timeField" promptText="e.g. 14:30" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+        <Label text="Type" styleClass="form-field-label" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <ComboBox fx:id="typeComboBox" editable="true" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="saveButton" text="Book" onAction="#handleSave" defaultButton="true"/>
+        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel" cancelButton="true" styleClass="secondary-button"/>
+    </HBox>
+
+</VBox>
